@@ -9,6 +9,7 @@ public class ModuleElement {
     private boolean isCompile;
 
     private boolean isDisableCompile;
+    private int definedIndex;
 
     public ModuleElement(String name, boolean isEnable) {
         this.name = name;
@@ -58,5 +59,13 @@ public class ModuleElement {
 
     public String lowerCaseName() {
         return name.toLowerCase();
+    }
+
+    public int getDefinedIndex() {
+        return definedIndex;
+    }
+
+    public void setDefinedIndex(int definedIndex) {
+        this.definedIndex = definedIndex;
     }
 }

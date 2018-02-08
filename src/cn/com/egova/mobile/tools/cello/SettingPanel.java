@@ -26,11 +26,17 @@ public class SettingPanel extends JPanel {
 
     private List<EntryPanel> mEntries = new ArrayList<>();
 
+    private OrderManager mOrderManager;
+
+    private JPanel mListPanel;
+
     public SettingPanel(List<ModuleElement> settingModules,
                         IConfirmListener confirmListener, ICancelListener cancelListener) {
         this.settingModules = settingModules;
         this.mConfirmListener = confirmListener;
         this.mCancelListener = cancelListener;
+        this.mOrderManager = new OrderManager(settingModules);
+        this.mOrderManager.sort();
 
         setPreferredSize(new Dimension(450, 600));
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
@@ -45,36 +51,43 @@ public class SettingPanel extends JPanel {
 
         contentPanel.add(checkAllPanel());
 
+        contentPanel.add(new OrderPanel());
+
         JPanel header = new HeaderPanel();
         contentPanel.add(header);
         contentPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 
-
-        JPanel injectionsPanel = new JPanel();
-        injectionsPanel.setLayout(new BoxLayout(injectionsPanel, BoxLayout.PAGE_AXIS));
-        injectionsPanel.add(Box.createRigidArea(new Dimension(0, 5)));
-
-        int cnt = 0;
-        for (ModuleElement element : settingModules) {
-            EntryPanel entry = new EntryPanel(element);
-            if (cnt > 0) {
-                injectionsPanel.add(Box.createRigidArea(new Dimension(0, 5)));
-            }
-            injectionsPanel.add(entry);
-            cnt++;
-
-            mEntries.add(entry);
-        }
-
-        injectionsPanel.add(Box.createVerticalGlue());
-        injectionsPanel.add(Box.createRigidArea(new Dimension(0, 5)));
-
-        JBScrollPane scrollPane = new JBScrollPane(injectionsPanel);
+        JBScrollPane scrollPane = new JBScrollPane(buildListLayout());
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         contentPanel.add(scrollPane);
 
         add(contentPanel, BorderLayout.CENTER);
         refresh();
+    }
+
+    private Component buildListLayout() {
+        if (mListPanel == null) {
+            mListPanel = new JPanel();
+        }
+        mListPanel.removeAll();
+        mListPanel.setLayout(new BoxLayout(mListPanel, BoxLayout.PAGE_AXIS));
+        mListPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+
+        int cnt = 0;
+        for (ModuleElement element : settingModules) {
+            EntryPanel entry = new EntryPanel(element);
+            if (cnt > 0) {
+                mListPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+            }
+            mListPanel.add(entry);
+            cnt++;
+
+            mEntries.add(entry);
+        }
+
+        mListPanel.add(Box.createVerticalGlue());
+        mListPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        return mListPanel;
     }
 
     private CheckAllResult getCheckAllResult() {
@@ -298,9 +311,10 @@ public class SettingPanel extends JPanel {
             mCheckAllCompileWrapper.setSelected(result.compile);
             mCheckAllSettingWrapper.setSelected(result.setting);
         }
+        sortIfCheckState();
     }
 
-    protected class ConfirmAction extends AbstractAction {
+    private class ConfirmAction extends AbstractAction {
         public void actionPerformed(ActionEvent event) {
             if (mConfirmListener != null) {
                 mConfirmListener.confirm();
@@ -308,7 +322,7 @@ public class SettingPanel extends JPanel {
         }
     }
 
-    protected class CancelAction extends AbstractAction {
+    private class CancelAction extends AbstractAction {
         public void actionPerformed(ActionEvent event) {
             if (mCancelListener != null) {
                 mCancelListener.onCancel();
@@ -370,5 +384,60 @@ public class SettingPanel extends JPanel {
             this.compile = compile;
             this.setting = setting;
         }
+    }
+
+    private class OrderPanel extends JPanel {
+        public OrderPanel() {
+            final JRadioButton rbName = new JRadioButton("名称", true);
+            final JRadioButton rbCheck = new JRadioButton("选中");
+            final JRadioButton rbFile = new JRadioButton("文件");
+
+            ButtonGroup group = new ButtonGroup();
+            group.add(rbName);
+            group.add(rbFile);
+            group.add(rbCheck);
+
+            ItemListener listener = new ItemListener() {
+                @Override
+                public void itemStateChanged(ItemEvent e) {
+                    if (rbName.isSelected()) {
+                        mOrderManager.updateOrder(OrderManager.ORDER_NAME);
+                        updateListLayout();
+                    } else if (rbFile.isSelected()) {
+                        mOrderManager.updateOrder(OrderManager.ORDER_FILE);
+                        updateListLayout();
+                    } else if (rbCheck.isSelected()) {
+                        mOrderManager.updateOrder(OrderManager.ORDER_CHECK_STATE);
+                        updateListLayout();
+                    }
+                }
+            };
+
+            rbName.addItemListener(listener);
+            rbFile.addItemListener(listener);
+            rbCheck.addItemListener(listener);
+
+            setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+            add(Box.createRigidArea(new Dimension(1, 0)));
+            add(configLabel(new JLabel("排序："), 90));
+            add(Box.createRigidArea(new Dimension(11, 0)));
+            add(rbName);
+            add(rbCheck);
+            add(rbFile);
+            add(Box.createHorizontalGlue());
+        }
+    }
+
+    private void sortIfCheckState() {
+        if (mOrderManager.getOrderType() == OrderManager.ORDER_CHECK_STATE) {
+            mOrderManager.sort();
+            updateListLayout();
+        }
+    }
+
+    private void updateListLayout() {
+        buildListLayout();
+        mListPanel.revalidate();
+        mListPanel.repaint();
     }
 }
