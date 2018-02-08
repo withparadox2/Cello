@@ -225,8 +225,8 @@ public class SettingPanel extends JPanel {
                     for (EntryPanel entry : mEntries) {
                         entry.compileWrapper.setSelectedWrapper(false);
                         entry.element.setCompile(false);
-                        updateIsCheckAll(true);
                     }
+                    updateIsCheckAll(true);
                 }
             });
             btnClear.setPreferredSize(new Dimension(60, 26));
@@ -358,10 +358,6 @@ public class SettingPanel extends JPanel {
         label.setPreferredSize(new Dimension(width, 26));
         label.setFont(new Font(label.getFont().getFontName(), Font.BOLD, label.getFont().getSize()));
         return label;
-    }
-
-    private JLabel configLabel(JLabel label) {
-        return configLabel(label, 100);
     }
 
     private static class CheckBoxWrapper {
