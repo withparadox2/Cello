@@ -405,7 +405,7 @@ public class SettingPanel extends JPanel {
 
     private class OrderPanel extends JPanel {
         public OrderPanel() {
-            final JRadioButton rbName = new JRadioButton("名称", true);
+            final JRadioButton rbName = new JRadioButton("名称");
             final JRadioButton rbCheck = new JRadioButton("选中");
             final JRadioButton rbFile = new JRadioButton("文件");
 
@@ -413,6 +413,15 @@ public class SettingPanel extends JPanel {
             group.add(rbName);
             group.add(rbFile);
             group.add(rbCheck);
+
+            int type = mOrderManager.getOrderType();
+            if (type == OrderManager.ORDER_NAME) {
+                rbName.setSelected(true);
+            } else if (type == OrderManager.ORDER_CHECK_STATE) {
+                rbCheck.setSelected(true);
+            } else if (type == OrderManager.ORDER_FILE) {
+                rbFile.setSelected(true);
+            }
 
             ItemListener listener = new ItemListener() {
                 @Override

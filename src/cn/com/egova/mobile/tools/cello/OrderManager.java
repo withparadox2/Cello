@@ -1,5 +1,7 @@
 package cn.com.egova.mobile.tools.cello;
 
+import com.intellij.ide.util.PropertiesComponent;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -8,6 +10,7 @@ import java.util.List;
  * Created by withparadox2 on 2018/2/8.
  */
 public class OrderManager {
+    private static final String KEY_ORDER = "cello-key-display-order";
     /**Alphabet order of name*/
     public static final int ORDER_NAME = 0;
     /**Checked item order first*/
@@ -21,11 +24,12 @@ public class OrderManager {
 
     public OrderManager(List<ModuleElement> elements) {
         this.mElements = elements;
+        setOrderType(PropertiesComponent.getInstance().getInt(KEY_ORDER, ORDER_NAME));
     }
 
     public OrderManager(List<ModuleElement> elements, int type) {
         this.mElements = elements;
-        this.mOrderType = type;
+        setOrderType(type);
     }
 
     public void updateOrder(int orderType) {
@@ -35,6 +39,7 @@ public class OrderManager {
 
     public void setOrderType(int type) {
         this.mOrderType = type;
+        PropertiesComponent.getInstance().setValue(KEY_ORDER, type, ORDER_NAME);
     }
 
     public int getOrderType() {
