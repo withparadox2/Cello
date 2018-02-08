@@ -132,4 +132,14 @@ public class Util {
     public static String unComment(String line) {
         return line.replaceFirst("^\\s*//", "");
     }
+
+    public static boolean equals(String left, String right) {
+        if (left == null && right == null) {
+            return true;
+        } else if (left != null && right != null) {
+            return left.equals(right);
+        } else {
+            return false;
+        }
+    }
 }

@@ -1,8 +1,11 @@
 package cn.com.egova.mobile.tools.cello;
 
+import a.i.U;
+import com.intellij.ui.DocumentAdapter;
 import com.intellij.ui.components.JBScrollPane;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
@@ -30,12 +33,15 @@ public class SettingPanel extends JPanel {
 
     private JPanel mListPanel;
 
+    private List<ModuleElement> mShowModules;
+
     public SettingPanel(List<ModuleElement> settingModules,
                         IConfirmListener confirmListener, ICancelListener cancelListener) {
         this.mSettingModules = settingModules;
+        this.mShowModules = new ArrayList<>(settingModules);
         this.mConfirmListener = confirmListener;
         this.mCancelListener = cancelListener;
-        this.mOrderManager = new OrderManager(settingModules);
+        this.mOrderManager = new OrderManager(mShowModules);
         this.mOrderManager.sort();
 
         setPreferredSize(new Dimension(450, 600));
@@ -51,7 +57,7 @@ public class SettingPanel extends JPanel {
 
         contentPanel.add(checkAllPanel());
 
-        contentPanel.add(new OrderPanel());
+        contentPanel.add(new FilterPanel());
 
         JPanel header = new HeaderPanel();
         contentPanel.add(header);
@@ -75,7 +81,7 @@ public class SettingPanel extends JPanel {
         mListPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 
         int cnt = 0;
-        for (ModuleElement element : mSettingModules) {
+        for (ModuleElement element : mShowModules) {
             EntryPanel entry = new EntryPanel(element);
             if (cnt > 0) {
                 mListPanel.add(Box.createRigidArea(new Dimension(0, 5)));
@@ -404,8 +410,10 @@ public class SettingPanel extends JPanel {
         }
     }
 
-    private class OrderPanel extends JPanel {
-        public OrderPanel() {
+    private class FilterPanel extends JPanel {
+        private String lastSearchText;
+        private List<MenuElement> backupList;
+        public FilterPanel() {
             final JRadioButton rbName = new JRadioButton("名称");
             final JRadioButton rbCheck = new JRadioButton("选中");
             final JRadioButton rbFile = new JRadioButton("文件");
@@ -444,13 +452,54 @@ public class SettingPanel extends JPanel {
             rbFile.addItemListener(listener);
             rbCheck.addItemListener(listener);
 
+            JTextField searchBox = new JTextField();
+            searchBox.setPreferredSize(new Dimension(50, 26));
+            searchBox.getDocument().addDocumentListener(new DocumentAdapter() {
+                @Override
+                protected void textChanged(DocumentEvent documentEvent) {
+                    String text = searchBox.getText();
+
+                    if (!Util.equals(text, lastSearchText)) {
+                        mShowModules.clear();
+                        if (Util.isEmpty(text)) {
+                            mShowModules.addAll(mSettingModules);
+                        } else {
+                            for (ModuleElement element : mSettingModules) {
+                                if (element.lowerCaseName().contains(text.toLowerCase())) {
+                                    mShowModules.add(element);
+                                }
+                            }
+                        }
+                        sortIfCheckState();
+                        updateListLayout();
+                    }
+
+                    lastSearchText = text;
+                }
+            });
+
+            JButton btnClearSearch = new JButton();
+            btnClearSearch.setAction(new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    searchBox.setText("");
+                }
+            });
+            btnClearSearch.setPreferredSize(new Dimension(45, 26));
+            btnClearSearch.setText("x");
+            btnClearSearch.setVisible(true);
+
             setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
             add(Box.createRigidArea(new Dimension(1, 0)));
-            add(configLabel(new JLabel("排序："), 90));
-            add(Box.createRigidArea(new Dimension(11, 0)));
+            add(configLabel(new JLabel("排序："), 40));
+            add(Box.createRigidArea(new Dimension(5, 0)));
             add(rbName);
             add(rbCheck);
             add(rbFile);
+            add(Box.createRigidArea(new Dimension(10, 0)));
+            add(configLabel(new JLabel("搜索："), 40));
+            add(searchBox);
+            add(btnClearSearch);
             add(Box.createHorizontalGlue());
         }
     }
