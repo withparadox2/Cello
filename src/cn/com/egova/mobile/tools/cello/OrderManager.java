@@ -18,13 +18,15 @@ public class OrderManager {
     /**Default order defined in file*/
     public static final int ORDER_FILE = 2;
 
-    private int mOrderType = ORDER_NAME;
+    private static final int DEFAULT_ORDER = ORDER_NAME;
+
+    private int mOrderType = DEFAULT_ORDER;
 
     private List<ModuleElement> mElements;
 
     public OrderManager(List<ModuleElement> elements) {
         this.mElements = elements;
-        setOrderType(PropertiesComponent.getInstance().getInt(KEY_ORDER, ORDER_NAME));
+        setOrderType(PropertiesComponent.getInstance().getInt(KEY_ORDER, DEFAULT_ORDER));
     }
 
     public OrderManager(List<ModuleElement> elements, int type) {
@@ -39,7 +41,7 @@ public class OrderManager {
 
     public void setOrderType(int type) {
         this.mOrderType = type;
-        PropertiesComponent.getInstance().setValue(KEY_ORDER, type, ORDER_NAME);
+        PropertiesComponent.getInstance().setValue(KEY_ORDER, type, DEFAULT_ORDER);
     }
 
     public int getOrderType() {
