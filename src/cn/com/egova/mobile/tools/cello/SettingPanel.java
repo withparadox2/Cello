@@ -19,7 +19,7 @@ public class SettingPanel extends JPanel {
     private IConfirmListener mConfirmListener;
     private ICancelListener mCancelListener;
 
-    private List<ModuleElement> settingModules;
+    private List<ModuleElement> mSettingModules;
 
     private CheckBoxWrapper mCheckAllSettingWrapper;
     private CheckBoxWrapper mCheckAllCompileWrapper;
@@ -32,7 +32,7 @@ public class SettingPanel extends JPanel {
 
     public SettingPanel(List<ModuleElement> settingModules,
                         IConfirmListener confirmListener, ICancelListener cancelListener) {
-        this.settingModules = settingModules;
+        this.mSettingModules = settingModules;
         this.mConfirmListener = confirmListener;
         this.mCancelListener = cancelListener;
         this.mOrderManager = new OrderManager(settingModules);
@@ -74,7 +74,7 @@ public class SettingPanel extends JPanel {
         mListPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 
         int cnt = 0;
-        for (ModuleElement element : settingModules) {
+        for (ModuleElement element : mSettingModules) {
             EntryPanel entry = new EntryPanel(element);
             if (cnt > 0) {
                 mListPanel.add(Box.createRigidArea(new Dimension(0, 5)));
@@ -93,7 +93,7 @@ public class SettingPanel extends JPanel {
     private CheckAllResult getCheckAllResult() {
         boolean setting = true;
         boolean compile = true;
-        for (ModuleElement element : settingModules) {
+        for (ModuleElement element : mSettingModules) {
             if (!element.isEnable()) {
                 setting = false;
             }
@@ -197,7 +197,7 @@ public class SettingPanel extends JPanel {
         revalidate();
 
         if (mConfirm != null) {
-            mConfirm.setVisible(settingModules.size() > 0);
+            mConfirm.setVisible(mSettingModules.size() > 0);
         }
     }
 

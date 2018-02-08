@@ -15,7 +15,7 @@ public class OrderManager {
     /**Default order defined in file*/
     public static final int ORDER_FILE = 2;
 
-    private int orderType = ORDER_NAME;
+    private int mOrderType = ORDER_NAME;
 
     private List<ModuleElement> mElements;
 
@@ -25,7 +25,7 @@ public class OrderManager {
 
     public OrderManager(List<ModuleElement> elements, int type) {
         this.mElements = elements;
-        this.orderType = type;
+        this.mOrderType = type;
     }
 
     public void updateOrder(int orderType) {
@@ -34,29 +34,29 @@ public class OrderManager {
     }
 
     public void setOrderType(int type) {
-        this.orderType = type;
+        this.mOrderType = type;
     }
 
     public int getOrderType() {
-        return this.orderType;
+        return this.mOrderType;
     }
 
     public void sort() {
-        if (orderType == ORDER_NAME) {
+        if (mOrderType == ORDER_NAME) {
             Collections.sort(mElements, new Comparator<ModuleElement>() {
                 @Override
                 public int compare(ModuleElement o1, ModuleElement o2) {
                     return o1.lowerCaseName().compareTo(o2.lowerCaseName());
                 }
             });
-        } else if (orderType == ORDER_FILE) {
+        } else if (mOrderType == ORDER_FILE) {
             Collections.sort(mElements, new Comparator<ModuleElement>() {
                 @Override
                 public int compare(ModuleElement o1, ModuleElement o2) {
                     return o1.getDefinedIndex() - o2.getDefinedIndex();
                 }
             });
-        } else if (orderType == ORDER_CHECK_STATE) {
+        } else if (mOrderType == ORDER_CHECK_STATE) {
             Collections.sort(mElements, new Comparator<ModuleElement>() {
                 @Override
                 public int compare(ModuleElement o1, ModuleElement o2) {
