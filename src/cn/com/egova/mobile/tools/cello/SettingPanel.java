@@ -209,7 +209,24 @@ public class SettingPanel extends JPanel {
             add(Box.createRigidArea(new Dimension(11, 0)));
             add(configLabel(new JLabel("Module"), 170));
             add(Box.createRigidArea(new Dimension(12, 0)));
-            add(configLabel(new JLabel("Compile")));
+            add(configLabel(new JLabel("Compile"), 60));
+
+            JButton btnClear = new JButton();
+            btnClear.setAction(new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    for (EntryPanel entry : mEntries) {
+                        entry.compileWrapper.setSelectedWrapper(false);
+                        entry.element.setCompile(false);
+                        updateIsCheckAll(true);
+                    }
+                }
+            });
+            btnClear.setPreferredSize(new Dimension(60, 26));
+            btnClear.setText("clear");
+            btnClear.setVisible(true);
+            add(btnClear);
+
             add(Box.createHorizontalGlue());
         }
     }
