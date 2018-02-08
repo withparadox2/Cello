@@ -218,7 +218,7 @@ public class MainAction extends AnAction implements ICancelListener, IConfirmLis
         Util.writeLinesToFile(mConfigLines, mConfigFile);
     }
 
-    protected void closeDialog() {
+    private void closeDialog() {
         if (mDialog == null) {
             return;
         }

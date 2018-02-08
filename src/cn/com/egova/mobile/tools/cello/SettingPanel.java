@@ -70,6 +70,7 @@ public class SettingPanel extends JPanel {
             mListPanel = new JPanel();
         }
         mListPanel.removeAll();
+        mEntries.clear();
         mListPanel.setLayout(new BoxLayout(mListPanel, BoxLayout.PAGE_AXIS));
         mListPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 

@@ -68,12 +68,15 @@ public class OrderManager {
                 @Override
                 public int compare(ModuleElement o1, ModuleElement o2) {
                     if (o1.isEnable() && o2.isEnable()) {
-                        if (o1.isCompile()) {
+                        if (o1.isCompile() == o2.isCompile()) {
+                            return o1.lowerCaseName().compareTo(o2.lowerCaseName());
+                        } else if (o1.isCompile()) {
                             return -1;
                         } else if (o2.isCompile()) {
                             return 1;
                         } else {
-                            return o1.lowerCaseName().compareTo(o2.lowerCaseName());
+                            // never execute
+                            return 0;
                         }
                     } else if (o1.isEnable()) {
                         return -1;
