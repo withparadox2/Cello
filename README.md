@@ -1,6 +1,6 @@
 Cello
 =======
 
-A android studio plugin.
+An android-studio plugin.
 
 ![](images/main.png)
