@@ -94,13 +94,14 @@ public class MainAction extends AnAction implements ICancelListener, IConfirmLis
                         for (ModuleElement e : mSettingsModules) {
                             e.setCompile(true);
                         }
+                        // Find what we need, break to save energy
                         break;
                     }
                 } else if (!Util.canIgnore(line)) {
                     // We enter other territory, be careful
                     break;
                 }
-            } else if (line.contains("-app-deps")) {
+            } else if (isModulePartStart(line)) {
                 beginParse = true;
             }
         }
@@ -154,7 +155,7 @@ public class MainAction extends AnAction implements ICancelListener, IConfirmLis
                     // We enter other territory, be careful
                     break;
                 }
-            } else if (line.contains("-app-deps")) {
+            } else if (isModulePartStart(line)) {
                 appDepsIndex = index;
             }
         }
@@ -168,6 +169,10 @@ public class MainAction extends AnAction implements ICancelListener, IConfirmLis
                 lineList.add(appDepsIndex + 1, element.toConfigModuleName());
             }
         }
+    }
+
+    private boolean isModulePartStart(String line) {
+        return line.startsWith("-app-deps") || line.startsWith("-app-not-aar");
     }
 
     private void showDialog() {

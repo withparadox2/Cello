@@ -1,6 +1,5 @@
 package cn.com.egova.mobile.tools.cello;
 
-import a.i.U;
 import com.intellij.ui.DocumentAdapter;
 import com.intellij.ui.components.JBScrollPane;
 
@@ -35,6 +34,8 @@ public class SettingPanel extends JPanel {
 
     private List<ModuleElement> mShowModules;
 
+    private boolean mIsLargeScreen;
+
     public SettingPanel(List<ModuleElement> settingModules,
                         IConfirmListener confirmListener, ICancelListener cancelListener) {
         this.mSettingModules = settingModules;
@@ -44,7 +45,16 @@ public class SettingPanel extends JPanel {
         this.mOrderManager = new OrderManager(mShowModules);
         this.mOrderManager.sort();
 
-        setPreferredSize(new Dimension(450, 600));
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        if (screenSize.width > 1400 && screenSize.height > 900) {
+            mIsLargeScreen = true;
+        }
+
+        if (mIsLargeScreen) {
+            setPreferredSize(new Dimension(580, 830));
+        } else {
+            setPreferredSize(new Dimension(450, 600));
+        }
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         addModules();
         addButtons();
@@ -216,7 +226,7 @@ public class SettingPanel extends JPanel {
             add(Box.createRigidArea(new Dimension(11, 0)));
             add(configLabel(new JLabel("Module"), 170));
             add(Box.createRigidArea(new Dimension(12, 0)));
-            add(configLabel(new JLabel("Compile"), 60));
+            add(configLabel(new JLabel("Compile"), mIsLargeScreen ? 90 : 60));
 
             JButton btnClear = new JButton();
             btnClear.setAction(new AbstractAction() {
@@ -229,7 +239,7 @@ public class SettingPanel extends JPanel {
                     updateIsCheckAll(true);
                 }
             });
-            btnClear.setPreferredSize(new Dimension(60, 26));
+            btnClear.setPreferredSize(new Dimension(mIsLargeScreen ? 90 : 60, 26));
             btnClear.setText("clear");
             btnClear.setVisible(true);
             add(btnClear);
@@ -481,19 +491,19 @@ public class SettingPanel extends JPanel {
                     searchBox.setText("");
                 }
             });
-            btnClearSearch.setPreferredSize(new Dimension(45, 26));
+            btnClearSearch.setPreferredSize(new Dimension(60, 26));
             btnClearSearch.setText("x");
             btnClearSearch.setVisible(true);
 
             setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
             add(Box.createRigidArea(new Dimension(1, 0)));
-            add(configLabel(new JLabel("排序："), 40));
+            add(configLabel(new JLabel("排序："), mIsLargeScreen ? 60 : 40));
             add(Box.createRigidArea(new Dimension(5, 0)));
             add(rbName);
             add(rbCheck);
             add(rbFile);
             add(Box.createRigidArea(new Dimension(10, 0)));
-            add(configLabel(new JLabel("搜索："), 40));
+            add(configLabel(new JLabel("搜索："), mIsLargeScreen ? 60 : 40));
             add(searchBox);
             add(btnClearSearch);
             add(Box.createHorizontalGlue());
