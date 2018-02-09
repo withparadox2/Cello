@@ -33,7 +33,7 @@
     <action id="Cello.MainAction"
             icon="/icons/egova-logo.png"
             class="cn.com.egova.mobile.tools.cello.MainAction"
-            text="Main" description="none">
+            text="ConfigModules" description="none">
       <add-to-group group-id="MainToolBar" anchor="first"/>
     </action>
   </actions>
