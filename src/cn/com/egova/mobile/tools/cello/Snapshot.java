@@ -38,6 +38,7 @@ class Snapshot {
         refreshList();
         JPanel panel = createMainPanel();
         mDialog = new JFrame();
+        mDialog.setTitle("Snapshot");
         mDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         mDialog.getContentPane().add(panel);
         mDialog.pack();

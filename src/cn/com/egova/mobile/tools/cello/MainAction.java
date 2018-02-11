@@ -179,6 +179,7 @@ public class MainAction extends AnAction implements ICancelListener, IConfirmLis
         SettingPanel panel = new SettingPanel(mSettingsModules, this, this);
 
         mDialog = new JFrame();
+        mDialog.setTitle("Config modules");
         mDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         mDialog.getRootPane().setDefaultButton(panel.getConfirmButton());
         mDialog.getContentPane().add(panel);
