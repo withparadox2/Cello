@@ -21,6 +21,14 @@ import java.util.regex.Pattern;
  * Created by withparadox2 on 2018/2/7.
  */
 public class Util {
+    private static Project sProject;
+    public static void setProject(Project project) {
+        sProject = project;
+    }
+    public static Project getProject() {
+        return sProject;
+    }
+
     public static boolean exists(VirtualFile file) {
         return file != null && file.exists();
     }

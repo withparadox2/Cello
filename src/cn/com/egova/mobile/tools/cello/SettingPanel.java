@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Created by withparadox2 on 2018/2/7.
  */
-public class SettingPanel extends JPanel {
+public class SettingPanel extends JPanel implements Snapshot.IUpdateListListener {
     protected JButton mConfirm;
     protected JButton mCancel;
     private IConfirmListener mConfirmListener;
@@ -35,6 +35,7 @@ public class SettingPanel extends JPanel {
     private List<ModuleElement> mShowModules;
 
     private boolean mIsLargeScreen;
+    private Snapshot mSnapShot;
 
     public SettingPanel(List<ModuleElement> settingModules,
                         IConfirmListener confirmListener, ICancelListener cancelListener) {
@@ -135,6 +136,20 @@ public class SettingPanel extends JPanel {
 
         JLabel compileDesc = configLabel(new JLabel("全选/反选"), 90);
 
+        JButton btnSnapShot = new JButton();
+        btnSnapShot.setAction(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (mSnapShot == null) {
+                    mSnapShot = new Snapshot();
+                }
+                mSnapShot.showDialog(mSettingModules, SettingPanel.this);
+            }
+        });
+        btnSnapShot.setPreferredSize(new Dimension(90, 26));
+        btnSnapShot.setText("Snapshot");
+        btnSnapShot.setVisible(true);
+
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
         panel.add(Box.createRigidArea(new Dimension(1, 0)));
@@ -143,6 +158,7 @@ public class SettingPanel extends JPanel {
         panel.add(Box.createRigidArea(new Dimension(127, 0)));
         panel.add(cbCompile);
         panel.add(compileDesc);
+        panel.add(btnSnapShot);
         panel.add(Box.createHorizontalGlue());
 
         mCheckAllSettingWrapper = new CheckBoxWrapper(cbSetting, new ItemListener() {
@@ -216,6 +232,11 @@ public class SettingPanel extends JPanel {
         if (mConfirm != null) {
             mConfirm.setVisible(mSettingModules.size() > 0);
         }
+    }
+
+    @Override
+    public void onListUpdate() {
+        updateListLayout();
     }
 
     private class HeaderPanel extends JPanel {
