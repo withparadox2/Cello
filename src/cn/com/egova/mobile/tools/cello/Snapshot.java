@@ -134,7 +134,7 @@ class Snapshot {
         Set<String> nameSet = getNameSet();
 
         if (nameSet.contains(snapshotName)) {
-            Util.alert(Util.getProject(), "已经存在" + snapshotName + "，请先删除");
+            Util.alert(null, "已经存在" + snapshotName + "，请先删除");
             return;
         }
 
@@ -212,7 +212,7 @@ class Snapshot {
             if (!Util.isEmpty(text)) {
                 String[] groups = text.split(SPLIT_GROUP);
                 if (groups.length != 2) {
-                    Util.alert(Util.getProject(), "格式不正确：" + text);
+                    Util.alert(null, "格式不正确：" + text);
                     return;
                 }
 
