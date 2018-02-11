@@ -35,7 +35,7 @@ public class SettingPanel extends JPanel implements Snapshot.IUpdateListListener
     private List<ModuleElement> mShowModules;
 
     private boolean mIsLargeScreen;
-    private Snapshot mSnapShot;
+    private Snapshot mSnapshot;
 
     public SettingPanel(List<ModuleElement> settingModules,
                         IConfirmListener confirmListener, ICancelListener cancelListener) {
@@ -140,10 +140,10 @@ public class SettingPanel extends JPanel implements Snapshot.IUpdateListListener
         btnSnapShot.setAction(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (mSnapShot == null) {
-                    mSnapShot = new Snapshot();
+                if (mSnapshot == null) {
+                    mSnapshot = new Snapshot();
                 }
-                mSnapShot.showDialog(mSettingModules, SettingPanel.this);
+                mSnapshot.showDialog(mSettingModules, SettingPanel.this);
             }
         });
         btnSnapShot.setPreferredSize(new Dimension(90, 26));
@@ -236,6 +236,7 @@ public class SettingPanel extends JPanel implements Snapshot.IUpdateListListener
 
     @Override
     public void onListUpdate() {
+        sortIfCheckState();
         updateListLayout();
     }
 
