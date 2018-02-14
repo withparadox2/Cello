@@ -21,13 +21,13 @@ public class MainAction extends AnAction implements ICancelListener, IConfirmLis
     private static Pattern moduleNamePattern = Pattern.compile("['\"](:\\S*)['\"]");
 
     private VirtualFile mSettingsFile;
-    private VirtualFile mConfigFile;
+    private VirtualFile mCompileFile;
 
     private List<ModuleElement> mSettingsModules;
     private Map<String, ModuleElement> mNameToModule;
 
     private List<String> mSettingsLines;
-    private List<String> mConfigLines;
+    private List<String> mCompileLines;
 
     private JFrame mDialog;
 
@@ -44,8 +44,8 @@ public class MainAction extends AnAction implements ICancelListener, IConfirmLis
             Util.toast(mProject, "settings.gradle不存在");
             return;
         }
-        mConfigFile = file.findChild("setting-plugins.gradle");
-        if (!Util.exists(mConfigFile)) {
+        mCompileFile = file.findChild("setting-plugins.gradle");
+        if (!Util.exists(mCompileFile)) {
             Util.toast(mProject, "setting-plugins.gradle不存在");
             return;
         }
@@ -53,8 +53,8 @@ public class MainAction extends AnAction implements ICancelListener, IConfirmLis
         mSettingsLines = Util.readFileToLines(mSettingsFile);
         mSettingsModules = extractSettingsModules(mSettingsLines);
 
-        mConfigLines = Util.readFileToLines(mConfigFile);
-        extractConfigModules(mConfigLines);
+        mCompileLines = Util.readFileToLines(mCompileFile);
+        extractCompileModules(mCompileLines);
 
         showDialog();
     }
@@ -81,9 +81,9 @@ public class MainAction extends AnAction implements ICancelListener, IConfirmLis
         return name.contains("eGovaMobile");
     }
 
-    private void extractConfigModules(List<String> configLines) {
+    private void extractCompileModules(List<String> compileLines) {
         boolean beginParse = false;
-        for (String line : configLines) {
+        for (String line : compileLines) {
             if (beginParse) {
                 if (Util.isIdentifier(line)) {
                     ModuleElement element = mNameToModule.get(":" + line);
@@ -142,7 +142,7 @@ public class MainAction extends AnAction implements ICancelListener, IConfirmLis
         }
     }
 
-    private void updateConfigLines(List<String> lineList, List<ModuleElement> elements) {
+    private void updateCompileLines(List<String> lineList, List<ModuleElement> elements) {
         int appDepsIndex = -1;
         int index = -1;
         for (Iterator<String> iterator = lineList.iterator(); iterator.hasNext(); ) {
@@ -166,7 +166,7 @@ public class MainAction extends AnAction implements ICancelListener, IConfirmLis
 
         for (ModuleElement element : elements) {
             if (element.isCompile()) {
-                lineList.add(appDepsIndex + 1, element.toConfigModuleName());
+                lineList.add(appDepsIndex + 1, element.toCompileModuleName());
             }
         }
     }
@@ -218,10 +218,10 @@ public class MainAction extends AnAction implements ICancelListener, IConfirmLis
         closeDialog();
 
         updateSettingsLines(mSettingsLines, mSettingsModules);
-        updateConfigLines(mConfigLines, mSettingsModules);
+        updateCompileLines(mCompileLines, mSettingsModules);
 
         Util.writeLinesToFile(mSettingsLines, mSettingsFile);
-        Util.writeLinesToFile(mConfigLines, mConfigFile);
+        Util.writeLinesToFile(mCompileLines, mCompileFile);
     }
 
     private void closeDialog() {

@@ -21,12 +21,12 @@ public class ModuleElement {
         return name;
     }
 
-    public String toConfigModuleName() {
+    public String toCompileModuleName() {
         return name.replace(":", "");
     }
 
     public String getDisplay() {
-        return toConfigModuleName();
+        return toCompileModuleName();
     }
 
     public boolean isDisableCompile() {
