@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 public class MainAction extends AnAction implements ICancelListener, IConfirmListener {
     protected static final Logger log = Logger.getInstance("CELLO");
 
-    private static Pattern moduleNamePattern = Pattern.compile("['\"](:\\S*)['\"]");
+    private static Pattern sModuleNamePattern = Pattern.compile("['\"](:\\S*)['\"]");
 
     private VirtualFile mSettingsFile;
     private VirtualFile mCompileFile;
@@ -39,12 +39,18 @@ public class MainAction extends AnAction implements ICancelListener, IConfirmLis
 
         VirtualFile file = mProject.getBaseDir();
 
-        mSettingsFile = file.findChild("settings.gradle");
+        mSettingsFile = file.findChild("settings_developer.gradle");
+        if (!Util.exists(mSettingsFile)) {
+            mSettingsFile = file.findChild("settings.gradle");
+        }
         if (!Util.exists(mSettingsFile)) {
             Util.toast(mProject, "settings.gradle不存在");
             return;
         }
-        mCompileFile = file.findChild("setting-plugins.gradle");
+        mCompileFile = file.findChild("setting-plugins-local.gradle");
+        if (!Util.exists(mCompileFile)) {
+            mCompileFile = file.findChild("setting-plugins.gradle");
+        }
         if (!Util.exists(mCompileFile)) {
             Util.toast(mProject, "setting-plugins.gradle不存在");
             return;
@@ -109,7 +115,7 @@ public class MainAction extends AnAction implements ICancelListener, IConfirmLis
 
 
     private String getModuleName(String line) {
-        Matcher m = moduleNamePattern.matcher(line);
+        Matcher m = sModuleNamePattern.matcher(line);
         if (m.find()) {
             return m.group(1);
         }
@@ -179,7 +185,7 @@ public class MainAction extends AnAction implements ICancelListener, IConfirmLis
         SettingPanel panel = new SettingPanel(mSettingsModules, this, this);
 
         mDialog = new JFrame();
-        mDialog.setTitle("Config modules");
+        mDialog.setTitle(mSettingsFile.getName() + "/" + mCompileFile.getName());
         mDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         mDialog.getRootPane().setDefaultButton(panel.getConfirmButton());
         mDialog.getContentPane().add(panel);
